@@ -91,7 +91,7 @@ The follow environment variables are available
 | ILIAS_WEBSERVICES_SOAP_CONNECT_TIMEOUT | Soap connection timeout | *-* |
 | ILIAS_WEBSERVICES_RPC_SERVER_HOST | ilserver host | ilserver |
 | ILIAS_WEBSERVICES_RPC_SERVER_PORT | ilserver port | 11111 |
-| ILIAS_LUEANCE_SEARCH | Enable lueance search and index cron job | false |
+| ILIAS_LUCENE_SEARCH | Enable lucene search and index cron job | false |
 | ILIAS_CHATROOM_ADDRESS | Chatroom server listen IP | 0.0.0.0 |
 | ILIAS_CHATROOM_PORT | Chatroom server listen port | 8080 |
 | ILIAS_CHATROOM_SUB_DIRECTORY | Chatroom server sub directory | *-* |

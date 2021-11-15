@@ -214,14 +214,14 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
     $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_chatroom_setting.php client_url "$ILIAS_CHATROOM_CLIENT_PROXY_CLIENT_URL"
   fi
 
-  if [ "$ILIAS_LUEANCE_SEARCH" = "true" ]; then
-    echo "Enable lueance search"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_general_setting.php common search_lueance 1
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/enable_or_disable_ilias_cron_job.php src_lueance_indexer 1
+  if [ "$ILIAS_LUCENE_SEARCH" = "true" ]; then
+    echo "Enable lucene search"
+    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_general_setting.php common search_lucene 1
+    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/enable_or_disable_ilias_cron_job.php src_lucene_indexer 1
   else
-    echo "Disable lueance search"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_general_setting.php common search_lueance 0
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/enable_or_disable_ilias_cron_job.php src_lueance_indexer 0
+    echo "Disable lucene search"
+    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_general_setting.php common search_lucene 0
+    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/enable_or_disable_ilias_cron_job.php src_lucene_indexer 0
   fi
 
   echo "Set smtp server"
