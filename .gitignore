@@ -1,0 +1,11 @@
+*
+!bin
+!bin/**
+!src
+!src/**
+!.dockerignore
+!.gitignore
+!.gitlab-ci.yml
+!Dockerfile
+!metadata.json
+!README.md

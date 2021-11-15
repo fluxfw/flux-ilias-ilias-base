@@ -1,0 +1,14 @@
+{
+  "description": "ILIAS base docker image (Experimental Beta Version)",
+  "keywords": [
+    "alpine",
+    "base",
+    "beta",
+    "docker",
+    "experimental",
+    "fpm",
+    "ilias",
+    "php"
+  ],
+  "homepage": "https://github.com/fluxapps/FluxIliasBase"
+}
