@@ -131,7 +131,7 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
 
   if [ -f "$ILIAS_WEB_DIR/setup/cli.php" ]; then
     echo "(Re)generate ILIAS setup cli $(basename "$ILIAS_CONFIG_FILE")"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/generate_ilias_config.php
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/generate_ilias_config.php
 
     if [ -d "$ILIAS_FILESYSTEM_WEB_DATA_DIR/$ILIAS_COMMON_CLIENT_ID/usr_images" ]; then
       echo "Already installed ILIAS detected"
@@ -176,65 +176,65 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
 
   if [ "$ILIAS_DEVMODE" = "true" ]; then
     echo "Enable ILIAS development mode"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_client_ilias_setting.php system DEVMODE 1
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_client_ilias_setting.php system DEVMODE 1
   else
     echo "Disable ILIAS development mode"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_client_ilias_setting.php system DEVMODE 0
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_client_ilias_setting.php system DEVMODE 0
   fi
 
   if [ -n "$ILIAS_CRON_USER_PASSWORD" ]; then
     echo "Ensure ILIAS $ILIAS_CRON_USER_LOGIN user exists"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/ensure_ilias_user_exists.php "$ILIAS_CRON_USER_LOGIN" "$ILIAS_CRON_USER_PASSWORD"
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/ensure_ilias_user_exists.php "$ILIAS_CRON_USER_LOGIN" "$ILIAS_CRON_USER_PASSWORD"
   else
     echo "Skip ensure ILIAS $ILIAS_CRON_USER_LOGIN user exists"
   fi
 
   if [ -d "$ILIAS_WEB_DIR/setup/templates" ]; then
     echo "Manually set ilserver server for ILIAS 6"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_general_setting.php common rpc_server_host "$ILIAS_WEBSERVICES_RPC_SERVER_HOST"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_general_setting.php common rpc_server_port "$ILIAS_WEBSERVICES_RPC_SERVER_PORT"
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common rpc_server_host "$ILIAS_WEBSERVICES_RPC_SERVER_HOST"
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common rpc_server_port "$ILIAS_WEBSERVICES_RPC_SERVER_PORT"
 
     echo "Manually set chatroom server for ILIAS 6"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_chatroom_setting.php address "$ILIAS_CHATROOM_ADDRESS"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_chatroom_setting.php port "$ILIAS_CHATROOM_PORT"
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php address "$ILIAS_CHATROOM_ADDRESS"
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php port "$ILIAS_CHATROOM_PORT"
     if [ -n "$ILIAS_CHATROOM_HTTPS_CERT" ]; then
-      $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_chatroom_setting.php protocol https
+      $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php protocol https
     else
-      $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_chatroom_setting.php protocol http
+      $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php protocol http
     fi
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_chatroom_setting.php cert "$ILIAS_CHATROOM_HTTPS_CERT"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_chatroom_setting.php key "$ILIAS_CHATROOM_HTTPS_KEY"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_chatroom_setting.php dhparam "$ILIAS_CHATROOM_HTTPS_DHPARAM"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_chatroom_setting.php log "$ILIAS_CHATROOM_LOG"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_chatroom_setting.php log_level "$ILIAS_CHATROOM_LOG_LEVEL"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_chatroom_setting.php error_log "$ILIAS_CHATROOM_ERROR_LOG"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_chatroom_setting.php ilias_proxy 1
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_chatroom_setting.php ilias_url "$ILIAS_CHATROOM_ILIAS_PROXY_ILIAS_URL"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_chatroom_setting.php client_proxy 1
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_chatroom_setting.php client_url "$ILIAS_CHATROOM_CLIENT_PROXY_CLIENT_URL"
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php cert "$ILIAS_CHATROOM_HTTPS_CERT"
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php key "$ILIAS_CHATROOM_HTTPS_KEY"
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php dhparam "$ILIAS_CHATROOM_HTTPS_DHPARAM"
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php log "$ILIAS_CHATROOM_LOG"
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php log_level "$ILIAS_CHATROOM_LOG_LEVEL"
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php error_log "$ILIAS_CHATROOM_ERROR_LOG"
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php ilias_proxy 1
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php ilias_url "$ILIAS_CHATROOM_ILIAS_PROXY_ILIAS_URL"
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php client_proxy 1
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php client_url "$ILIAS_CHATROOM_CLIENT_PROXY_CLIENT_URL"
   fi
 
   if [ "$ILIAS_LUCENE_SEARCH" = "true" ]; then
     echo "Enable lucene search"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_general_setting.php common search_lucene 1
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/enable_or_disable_ilias_cron_job.php src_lucene_indexer 1
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common search_lucene 1
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/enable_or_disable_ilias_cron_job.php src_lucene_indexer 1
   else
     echo "Disable lucene search"
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_general_setting.php common search_lucene 0
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/enable_or_disable_ilias_cron_job.php src_lucene_indexer 0
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common search_lucene 0
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/enable_or_disable_ilias_cron_job.php src_lucene_indexer 0
   fi
 
   echo "Set smtp server"
   if [ -n "$ILIAS_SMTP_HOST" ]; then
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_general_setting.php common mail_smtp_status 1
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common mail_smtp_status 1
   else
-    $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_general_setting.php common mail_smtp_status 0
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common mail_smtp_status 0
   fi
-  $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_general_setting.php common mail_smtp_host "$ILIAS_SMTP_HOST"
-  $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_general_setting.php common mail_smtp_port "$ILIAS_SMTP_PORT"
-  $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_general_setting.php common mail_smtp_encryption "$ILIAS_SMTP_ENCRYPTION"
-  $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_general_setting.php common mail_smtp_user "$ILIAS_SMTP_USER"
-  $_ILIAS_EXEC_AS_WWW_DATA /FluxIlias/bin/set_ilias_general_setting.php common mail_smtp_password "$ILIAS_SMTP_PASSWORD"
+  $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common mail_smtp_host "$ILIAS_SMTP_HOST"
+  $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common mail_smtp_port "$ILIAS_SMTP_PORT"
+  $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common mail_smtp_encryption "$ILIAS_SMTP_ENCRYPTION"
+  $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common mail_smtp_user "$ILIAS_SMTP_USER"
+  $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common mail_smtp_password "$ILIAS_SMTP_PASSWORD"
 
   echo "Config finished"
   echo "Skip it until a new container (re)creation"
