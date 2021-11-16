@@ -1,8 +1,8 @@
-# FluxIliasBase
+# flux-ilias-ilias-base
 
 Experimental Beta Version
 
-First look at [FluxIlias](https://github.com/fluxapps/FluxIlias)
+First look at [flux-ilias](https://github.com/fluxapps/flux-ilias)
 
 The follow environment variables are available
 

@@ -1,7 +1,7 @@
 ARG PHP_VERSION
 FROM php:$PHP_VERSION-fpm-alpine
 
-LABEL org.opencontainers.image.source="https://github.com/fluxapps/FluxIliasBase"
+LABEL org.opencontainers.image.source="https://github.com/fluxapps/flux-ilias-ilias-base"
 LABEL maintainer="fluxlabs <support@fluxlabs.ch> (https://fluxlabs.ch)"
 
 RUN apk add --no-cache curl ffmpeg freetype-dev ghostscript imagemagick libjpeg-turbo-dev libpng-dev libxslt-dev libzip-dev mariadb-client openldap-dev patch su-exec unzip zlib-dev zip && \
@@ -22,9 +22,9 @@ RUN (mkdir -p "$(dirname $ILIAS_STYLE_PATH_TO_LESSC)" && cd "$(dirname $ILIAS_ST
 COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer2
 
-COPY . /FluxIlias
+COPY . /flux-ilias-ilias-base
 
-ENTRYPOINT ["/FluxIlias/bin/entrypoint.sh"]
+ENTRYPOINT ["/flux-ilias-ilias-base/bin/entrypoint.sh"]
 
 ENV _ILIAS_WWW_DATA www-data:www-data
 ENV _ILIAS_EXEC_AS_WWW_DATA su-exec $_ILIAS_WWW_DATA
