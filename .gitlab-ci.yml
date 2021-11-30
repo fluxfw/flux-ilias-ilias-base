@@ -6,7 +6,7 @@ build:
   script:
     - echo -n $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY;
       for php_version in $PHP_VERSIONS; do
-        docker build . --pull --build-arg PHP_VERSION=$php_version -t $CI_REGISTRY_IMAGE:php$php_version;
+        docker build . --pull --build-arg PHP_FPM_IMAGE=php:$php_version-fpm-alpine -t $CI_REGISTRY_IMAGE:php$php_version;
         docker push $CI_REGISTRY_IMAGE:php$php_version;
       done;
       docker logout $CI_REGISTRY;

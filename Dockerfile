@@ -1,5 +1,6 @@
-ARG PHP_VERSION
-FROM php:$PHP_VERSION-fpm-alpine
+ARG PHP_FPM_IMAGE=php:fpm-alpine
+
+FROM $PHP_FPM_IMAGE
 
 LABEL org.opencontainers.image.source="https://github.com/fluxapps/flux-ilias-ilias-base"
 LABEL maintainer="fluxlabs <support@fluxlabs.ch> (https://fluxlabs.ch)"
