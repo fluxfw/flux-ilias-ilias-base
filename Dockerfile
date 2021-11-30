@@ -1,4 +1,10 @@
+ARG COMPOSER1_IMAGE=composer:1
+ARG COMPOSER2_IMAGE=composer:latest
 ARG PHP_FPM_IMAGE=php:fpm-alpine
+
+FROM $COMPOSER1_IMAGE AS composer1
+
+FROM $COMPOSER2_IMAGE AS composer2
 
 FROM $PHP_FPM_IMAGE
 
@@ -20,8 +26,8 @@ RUN wget -O - https://github.com/dustinblackman/phantomized/releases/download/2.
 ENV ILIAS_STYLE_PATH_TO_LESSC /usr/share/lessphp/plessc
 RUN (mkdir -p "$(dirname $ILIAS_STYLE_PATH_TO_LESSC)" && cd "$(dirname $ILIAS_STYLE_PATH_TO_LESSC)" && wget -O - https://github.com/leafo/lessphp/archive/refs/tags/v0.5.0.tar.gz | tar -xz --strip-components=1 && sed -i "s/{0}/[0]/" lessc.inc.php)
 
-COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer2
+COPY --from=composer1 /usr/bin/composer /usr/bin/composer1
+COPY --from=composer2 /usr/bin/composer /usr/bin/composer2
 
 COPY . /flux-ilias-ilias-base
 
