@@ -1,5 +1,8 @@
 ARG COMPOSER1_IMAGE=composer:1
 ARG COMPOSER2_IMAGE=composer:latest
+ARG LESSPHP_SOURCE_URL=https://github.com/leafo/lessphp/archive/refs/tags/v0.5.0.tar.gz
+ARG PHANTOMJS_ALPINE_PATCH_SOURCE_URL=https://github.com/dustinblackman/phantomized/releases/download/2.1.1a/dockerized-phantomjs.tar.gz
+ARG PHANTOMJS_SOURCE_URL=https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
 ARG PHP_FPM_IMAGE=php:fpm-alpine
 
 FROM $COMPOSER1_IMAGE AS composer1
@@ -7,6 +10,9 @@ FROM $COMPOSER1_IMAGE AS composer1
 FROM $COMPOSER2_IMAGE AS composer2
 
 FROM $PHP_FPM_IMAGE
+ARG LESSPHP_SOURCE_URL
+ARG PHANTOMJS_ALPINE_PATCH_SOURCE_URL
+ARG PHANTOMJS_SOURCE_URL
 
 LABEL org.opencontainers.image.source="https://github.com/fluxapps/flux-ilias-ilias-base"
 LABEL maintainer="fluxlabs <support@fluxlabs.ch> (https://fluxlabs.ch)"
@@ -14,17 +20,17 @@ LABEL maintainer="fluxlabs <support@fluxlabs.ch> (https://fluxlabs.ch)"
 RUN apk add --no-cache curl ffmpeg freetype-dev ghostscript imagemagick libjpeg-turbo-dev libpng-dev libxslt-dev libzip-dev mariadb-client openldap-dev patch su-exec unzip zlib-dev zip && \
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
     case $PHP_VERSION in 8.*|7.4*) docker-php-ext-configure gd --with-freetype --with-jpeg ;; *) docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ ;; esac && \
-    docker-php-ext-install gd ldap mysqli pdo_mysql soap xsl zip && \
-    case $PHP_VERSION in 8.*) pecl install "channel://pecl.php.net/xmlrpc-1.0.0RC2" && docker-php-ext-enable xmlrpc ;; *) docker-php-ext-install xmlrpc ;; esac && \
+    docker-php-ext-install -j$(nproc) gd ldap mysqli pdo_mysql soap xsl zip && \
+    case $PHP_VERSION in 8.*) pecl install "channel://pecl.php.net/xmlrpc-1.0.0RC2" && docker-php-ext-enable xmlrpc ;; *) docker-php-ext-install -j$(nproc) xmlrpc ;; esac && \
     docker-php-source delete && \
     apk del .build-deps
 
 ENV ILIAS_PDFGENERATION_PATH_TO_PHANTOM_JS /usr/local/bin/phantomjs
-RUN wget -O - https://github.com/dustinblackman/phantomized/releases/download/2.1.1a/dockerized-phantomjs.tar.gz | tar -xz -C / && \
-    (mkdir -p /tmp/phantomjs && cd /tmp/phantomjs && wget -O - https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 | tar -xj --strip-components=1 && mv bin/phantomjs "$ILIAS_PDFGENERATION_PATH_TO_PHANTOM_JS" && rm -rf /tmp/phantomjs)
+RUN wget -O - $PHANTOMJS_ALPINE_PATCH_SOURCE_URL | tar -xz -C / && \
+    (mkdir -p /tmp/phantomjs && cd /tmp/phantomjs && wget -O - $PHANTOMJS_SOURCE_URL | tar -xj --strip-components=1 && mv bin/phantomjs $ILIAS_PDFGENERATION_PATH_TO_PHANTOM_JS && rm -rf /tmp/phantomjs)
 
 ENV ILIAS_STYLE_PATH_TO_LESSC /usr/share/lessphp/plessc
-RUN (mkdir -p "$(dirname $ILIAS_STYLE_PATH_TO_LESSC)" && cd "$(dirname $ILIAS_STYLE_PATH_TO_LESSC)" && wget -O - https://github.com/leafo/lessphp/archive/refs/tags/v0.5.0.tar.gz | tar -xz --strip-components=1 && sed -i "s/{0}/[0]/" lessc.inc.php)
+RUN (mkdir -p "$(dirname $ILIAS_STYLE_PATH_TO_LESSC)" && cd "$(dirname $ILIAS_STYLE_PATH_TO_LESSC)" && wget -O - $LESSPHP_SOURCE_URL | tar -xz --strip-components=1 && sed -i "s/{0}/[0]/" lessc.inc.php)
 
 COPY --from=composer1 /usr/bin/composer /usr/bin/composer1
 COPY --from=composer2 /usr/bin/composer /usr/bin/composer2
