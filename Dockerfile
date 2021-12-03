@@ -4,6 +4,7 @@ ARG LESSPHP_SOURCE_URL=https://github.com/leafo/lessphp/archive/refs/tags/v0.5.0
 ARG PHANTOMJS_ALPINE_PATCH_SOURCE_URL=https://github.com/dustinblackman/phantomized/releases/download/2.1.1a/dockerized-phantomjs.tar.gz
 ARG PHANTOMJS_SOURCE_URL=https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
 ARG PHP_FPM_IMAGE=php:fpm-alpine
+ARG PHP8_XMLRPC_SOURCE_URL=https://pecl.php.net/get/xmlrpc
 
 FROM $COMPOSER1_IMAGE AS composer1
 
@@ -13,6 +14,7 @@ FROM $PHP_FPM_IMAGE
 ARG LESSPHP_SOURCE_URL
 ARG PHANTOMJS_ALPINE_PATCH_SOURCE_URL
 ARG PHANTOMJS_SOURCE_URL
+ARG PHP8_XMLRPC_SOURCE_URL
 
 LABEL org.opencontainers.image.source="https://github.com/fluxapps/flux-ilias-ilias-base"
 LABEL maintainer="fluxlabs <support@fluxlabs.ch> (https://fluxlabs.ch)"
@@ -21,7 +23,7 @@ RUN apk add --no-cache curl ffmpeg freetype-dev ghostscript imagemagick libjpeg-
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
     case $PHP_VERSION in 8.*|7.4*) docker-php-ext-configure gd --with-freetype --with-jpeg ;; *) docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ ;; esac && \
     docker-php-ext-install -j$(nproc) gd ldap mysqli pdo_mysql soap xsl zip && \
-    case $PHP_VERSION in 8.*) pecl install "channel://pecl.php.net/xmlrpc-1.0.0RC2" && docker-php-ext-enable xmlrpc ;; *) docker-php-ext-install -j$(nproc) xmlrpc ;; esac && \
+    case $PHP_VERSION in 8.*) (mkdir -p /usr/src/php/ext/xmlrpc && cd /usr/src/php/ext/xmlrpc && wget -O - $PHP8_XMLRPC_SOURCE_URL | tar -xz --strip-components=1) ;; esac && docker-php-ext-install -j$(nproc) xmlrpc && \
     docker-php-source delete && \
     apk del .build-deps
 
