@@ -117,16 +117,16 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
 
   ensureDataDirectories
 
-  if echo "$ILIAS_DATABASE_TYPE" | grep -q "postgres"; then
-    echo "WARNING: Waiting for ensure database is ready only works with mysql like database"
-    echo "Further config may will fail"
-  else
+  if [ -z "$ILIAS_DATABASE_TYPE" ] || [ "$ILIAS_DATABASE_TYPE" = "mysql" ] || [ "$ILIAS_DATABASE_TYPE" = "innodb" ]; then
     mysql_query="mysql --host=$ILIAS_DATABASE_HOST --port=$ILIAS_DATABASE_PORT --user=$ILIAS_DATABASE_USER --password=$ILIAS_DATABASE_PASSWORD $ILIAS_DATABASE_DATABASE -e"
     until $mysql_query "SELECT VERSION()" 1>/dev/null; do
       echo "Waiting 3 seconds for ensure database is ready"
       sleep 3
     done
     echo "Database is ready"
+  else
+    echo "WARNING: Waiting for ensure database is ready only works with mysql like database"
+    echo "Further config may will fail"
   fi
 
   if [ -f "$ILIAS_WEB_DIR/setup/cli.php" ]; then
@@ -162,12 +162,12 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
   ensureDataDirectories
 
   if [ -n "$ILIAS_ROOT_USER_PASSWORD" ]; then
-    if echo "$ILIAS_DATABASE_TYPE" | grep -q "postgres"; then
-      echo "WARNING: Set ILIAS $ILIAS_ROOT_USER_LOGIN user password only works with mysql like database"
-      echo "Further config may will fail"
-    else
+    if [ -z "$ILIAS_DATABASE_TYPE" ] || [ "$ILIAS_DATABASE_TYPE" = "mysql" ] || [ "$ILIAS_DATABASE_TYPE" = "innodb" ]; then
       echo "Set ILIAS $ILIAS_ROOT_USER_LOGIN user password"
       $mysql_query "UPDATE usr_data SET passwd='$(echo -n "$ILIAS_ROOT_USER_PASSWORD" | md5sum | awk '{print $1}')',passwd_enc_type='md5' WHERE login='$ILIAS_ROOT_USER_LOGIN'"
+    else
+      echo "WARNING: Set ILIAS $ILIAS_ROOT_USER_LOGIN user password only works with mysql like database"
+      echo "Further config may will fail"
     fi
   else
     echo "Skip set ILIAS $ILIAS_ROOT_USER_LOGIN user password"

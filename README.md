@@ -34,7 +34,7 @@ The follow environment variables are available
 | ILIAS_BACKGROUNDTASKS_TYPE | Background tasks type | sync |
 | ILIAS_BACKGROUNDTASKS_MAX_NUMBER_OF_CONCURRENT_TASKS | Number of concurrent background tasks<br>For async type | 1 |
 | ILIAS_DATABASE_TYPE | Database type | innodb |
-| ILIAS_DATABASE_HOST | Database host | mysql |
+| ILIAS_DATABASE_HOST | Database host | database |
 | ILIAS_DATABASE_PORT | Database port | 3306 |
 | ILIAS_DATABASE_DATABASE | Database name | ilias |
 | ILIAS_DATABASE_USER | Database user | ilias |
