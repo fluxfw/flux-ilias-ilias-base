@@ -38,6 +38,17 @@ function config(array $template_config, array $config, string $parent_key) : ?ar
                 }
 
                 $config[$current_key] = $env_value;
+            } else {
+                if (in_array($key, [
+                    "ILIAS_COMMON_MASTER_PASSWORD",
+                    "ILIAS_DATABASE_PASSWORD"
+                ])
+                ) {
+                    $env_value_file = filter_input(INPUT_ENV, $key . "_FILE");
+                    if ($env_value_file !== null && file_exists($env_value_file)) {
+                        $config[$current_key] = file_get_contents($env_value_file) ?: "";
+                    }
+                }
             }
         }
 

@@ -2,6 +2,20 @@
 
 set -e
 
+getFileEnv () {
+  name="$1"
+  value=`printenv "$name"`
+  if [ -n "$value" ]; then
+    echo "$value"
+  else
+    name_file="${name}_FILE"
+    value_file=`printenv "$name_file"`
+    if [ -n "$value_file" ] && [ -f "$value_file" ]; then
+      cat "$value_file"
+    fi
+  fi
+}
+
 ensureDataDirectories () {
   echo "Ensure data directories exists and the owner is $_ILIAS_WWW_DATA"
 
@@ -118,7 +132,7 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
   ensureDataDirectories
 
   if [ -z "$ILIAS_DATABASE_TYPE" ] || [ "$ILIAS_DATABASE_TYPE" = "mysql" ] || [ "$ILIAS_DATABASE_TYPE" = "innodb" ]; then
-    mysql_query="mysql --host=$ILIAS_DATABASE_HOST --port=$ILIAS_DATABASE_PORT --user=$ILIAS_DATABASE_USER --password=$ILIAS_DATABASE_PASSWORD $ILIAS_DATABASE_DATABASE -e"
+    mysql_query="mysql --host=$ILIAS_DATABASE_HOST --port=$ILIAS_DATABASE_PORT --user=$ILIAS_DATABASE_USER --password=$(getFileEnv ILIAS_DATABASE_PASSWORD) $ILIAS_DATABASE_DATABASE -e"
     until $mysql_query "SELECT VERSION()" 1>/dev/null; do
       echo "Waiting 3 seconds for ensure database is ready"
       sleep 3
@@ -161,10 +175,10 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
 
   ensureDataDirectories
 
-  if [ -n "$ILIAS_ROOT_USER_PASSWORD" ]; then
+  if [ -n "$(getFileEnv ILIAS_ROOT_USER_PASSWORD)" ]; then
     if [ -z "$ILIAS_DATABASE_TYPE" ] || [ "$ILIAS_DATABASE_TYPE" = "mysql" ] || [ "$ILIAS_DATABASE_TYPE" = "innodb" ]; then
       echo "Set ILIAS $ILIAS_ROOT_USER_LOGIN user password"
-      $mysql_query "UPDATE usr_data SET passwd='$(echo -n "$ILIAS_ROOT_USER_PASSWORD" | md5sum | awk '{print $1}')',passwd_enc_type='md5' WHERE login='$ILIAS_ROOT_USER_LOGIN'"
+      $mysql_query "UPDATE usr_data SET passwd='$(echo -n "$(getFileEnv ILIAS_ROOT_USER_PASSWORD)" | md5sum | awk '{print $1}')',passwd_enc_type='md5' WHERE login='$ILIAS_ROOT_USER_LOGIN'"
     else
       echo "WARNING: Set ILIAS $ILIAS_ROOT_USER_LOGIN user password only works with mysql like database"
       echo "Further config may will fail"
@@ -182,9 +196,9 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
     $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_client_ilias_setting.php system DEVMODE 0
   fi
 
-  if [ -n "$ILIAS_CRON_USER_PASSWORD" ]; then
+  if [ -n "$(getFileEnv ILIAS_CRON_USER_PASSWORD)" ]; then
     echo "Ensure ILIAS $ILIAS_CRON_USER_LOGIN user exists"
-    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/ensure_ilias_user_exists.php "$ILIAS_CRON_USER_LOGIN" "$ILIAS_CRON_USER_PASSWORD"
+    $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/ensure_ilias_user_exists.php "$ILIAS_CRON_USER_LOGIN" "$(getFileEnv ILIAS_CRON_USER_PASSWORD)"
   else
     echo "Skip ensure ILIAS $ILIAS_CRON_USER_LOGIN user exists"
   fi
@@ -233,8 +247,8 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
   $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common mail_smtp_host "$ILIAS_SMTP_HOST"
   $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common mail_smtp_port "$ILIAS_SMTP_PORT"
   $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common mail_smtp_encryption "$ILIAS_SMTP_ENCRYPTION"
-  $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common mail_smtp_user "$ILIAS_SMTP_USER"
-  $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common mail_smtp_password "$ILIAS_SMTP_PASSWORD"
+  $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common mail_smtp_user "$(getFileEnv ILIAS_SMTP_USER)"
+  $_ILIAS_EXEC_AS_WWW_DATA /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common mail_smtp_password "$(getFileEnv ILIAS_SMTP_PASSWORD)"
 
   echo "Config finished"
   echo "Skip it until a new container (re)creation"
