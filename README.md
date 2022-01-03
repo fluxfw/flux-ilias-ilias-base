@@ -28,7 +28,7 @@ The follow environment variables are available
 | ILIAS_PHP_POST_MAX_SIZE | Maximal post size | 200M |
 | ILIAS_PHP_UPLOAD_MAX_SIZE | Maximal upload size | 200M  |
 | ILIAS_COMMON_CLIENT_ID | Client name | default |
-| **ILIAS_COMMON_MASTER_PASSWORD** | GUI setup password<br>Only needed for ILIAS 6 | *-* |
+| **ILIAS_COMMON_MASTER_PASSWORD** | GUI setup password<br>Only needed for ILIAS 6<br>Use *ILIAS_COMMON_MASTER_PASSWORD_FILE* for docker secrets | *-* |
 | ILIAS_COMMON_SERVER_TIMEZONE | Timezone | UTC |
 | ILIAS_COMMON_REGISTER_NIC | Register on nic | false |
 | ILIAS_BACKGROUNDTASKS_TYPE | Background tasks type | sync |
@@ -38,7 +38,7 @@ The follow environment variables are available
 | ILIAS_DATABASE_PORT | Database port | 3306 |
 | ILIAS_DATABASE_DATABASE | Database name | ilias |
 | ILIAS_DATABASE_USER | Database user | ilias |
-| **ILIAS_DATABASE_PASSWORD** | Database password | *-* |
+| **ILIAS_DATABASE_PASSWORD** | Database password<br>Use *ILIAS_DATABASE_PASSWORD_FILE* for docker secrets | *-* |
 | ILIAS_DATABASE_CREATE_DATABASE | Auto create database | true |
 | ILIAS_DATABASE_COLLATION | Init database collation | utf8_general_ci |
 | ILIAS_DATABASE_PATH_TO_DB_DUMP | Init database dump | *%ILIAS_WEB_DIR%*/setup/sql/ilias3.sql |
@@ -107,14 +107,14 @@ The follow environment variables are available
 | ILIAS_CHATROOM_DELETION_INTERVAL_DELETION_VALUE | Deletion interval value | *-* |
 | ILIAS_CHATROOM_DELETION_INTERVAL_DELETION_TIME | Deletion interval time | *-* |
 | ILIAS_ROOT_USER_LOGIN | Root user login | root |
-| **ILIAS_ROOT_USER_PASSWORD** | Root user password | *-* |
+| **ILIAS_ROOT_USER_PASSWORD** | Root user password<br>Use *ILIAS_ROOT_USER_PASSWORD_FILE* for docker secrets | *-* |
 | ILIAS_CRON_USER_LOGIN | Cron user login<br>This user will be auto created (If the password is set) | cron |
-| ILIAS_CRON_USER_PASSWORD | Cron user password | *-* |
+| ILIAS_CRON_USER_PASSWORD | Cron user password<br>Use *ILIAS_CRON_USER_PASSWORD_FILE* for docker secrets | *-* |
 | ILIAS_DEVMODE | ILIAS development mode | false |
 | ILIAS_SMTP_HOST | SMTP host | *-* |
 | ILIAS_SMTP_PORT | SMTP port | *-* |
 | ILIAS_SMTP_ENCRYPTION | SMTP encryption | *-* |
-| ILIAS_SMTP_USER | SMTP user | *-* |
-| ILIAS_SMTP_PASSWORD | SMTP password | *-* |
+| ILIAS_SMTP_USER | SMTP user<br>Use *ILIAS_SMTP_USER_FILE* for docker secrets | *-* |
+| ILIAS_SMTP_PASSWORD | SMTP password<br>Use *ILIAS_SMTP_PASSWORD_FILE* for docker secrets | *-* |
 
 Minimal variables required to set are **bold**
