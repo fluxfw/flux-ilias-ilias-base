@@ -1,3 +1,4 @@
+ARG APCU_SOURCE_URL=https://pecl.php.net/get/apcu
 ARG COMPOSER1_IMAGE=composer:1
 ARG COMPOSER2_IMAGE=composer:latest
 ARG LESSPHP_SOURCE_URL=https://github.com/leafo/lessphp/archive/refs/tags/v0.5.0.tar.gz
@@ -11,6 +12,7 @@ FROM $COMPOSER1_IMAGE AS composer1
 FROM $COMPOSER2_IMAGE AS composer2
 
 FROM $PHP_FPM_IMAGE
+ARG APCU_SOURCE_URL
 ARG LESSPHP_SOURCE_URL
 ARG PHANTOMJS_ALPINE_PATCH_SOURCE_URL
 ARG PHANTOMJS_SOURCE_URL
@@ -21,8 +23,9 @@ LABEL maintainer="fluxlabs <support@fluxlabs.ch> (https://fluxlabs.ch)"
 
 RUN apk add --no-cache curl ffmpeg freetype-dev ghostscript imagemagick libjpeg-turbo-dev libpng-dev libxslt-dev libzip-dev mariadb-client openldap-dev patch su-exec unzip zlib-dev zip && \
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
+    (mkdir -p /usr/src/php/ext/apcu && cd /usr/src/php/ext/apcu && wget -O - $APCU_SOURCE_URL | tar -xz --strip-components=1) && \
     case $PHP_VERSION in 8.*|7.4*) docker-php-ext-configure gd --with-freetype --with-jpeg ;; *) docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ ;; esac && \
-    docker-php-ext-install -j$(nproc) gd ldap mysqli pdo_mysql soap xsl zip && \
+    docker-php-ext-install -j$(nproc) apcu gd ldap mysqli pdo_mysql soap xsl zip && \
     case $PHP_VERSION in 8.*) (mkdir -p /usr/src/php/ext/xmlrpc && cd /usr/src/php/ext/xmlrpc && wget -O - $PHP8_XMLRPC_SOURCE_URL | tar -xz --strip-components=1) ;; esac && docker-php-ext-install -j$(nproc) xmlrpc && \
     docker-php-source delete && \
     apk del .build-deps
