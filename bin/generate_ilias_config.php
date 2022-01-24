@@ -6,10 +6,8 @@ function config(array $template_config, array $config, string $parent_key) : ?ar
     foreach ($template_config as $current_key => $default_value) {
         $key = $parent_key . "_" . strtoupper($current_key);
 
-        $value = $config[$current_key] ?? null;
-
         if (is_array($default_value)) {
-            $config[$current_key] = config($default_value, $value ?? [], $key);
+            $config[$current_key] = config($default_value, $config[$current_key] ?? [], $key);
         } else {
             $env_value = filter_input(INPUT_ENV, $key);
             if ($env_value !== null) {
@@ -39,6 +37,8 @@ function config(array $template_config, array $config, string $parent_key) : ?ar
 
                 $config[$current_key] = $env_value;
             } else {
+                $config[$current_key] = null;
+
                 if (in_array($key, [
                     "ILIAS_COMMON_MASTER_PASSWORD",
                     "ILIAS_DATABASE_PASSWORD"
@@ -50,10 +50,6 @@ function config(array $template_config, array $config, string $parent_key) : ?ar
                     }
                 }
             }
-        }
-
-        if ($config[$current_key] === null) {
-            unset($config[$current_key]);
         }
 
         if (in_array($key, [
@@ -73,6 +69,10 @@ function config(array $template_config, array $config, string $parent_key) : ?ar
             && is_string($config[$current_key])
         ) {
             $config[$current_key] = json_decode($config[$current_key], true) ?? [];
+        }
+
+        if ($config[$current_key] === null) {
+            unset($config[$current_key]);
         }
     }
 
