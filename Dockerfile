@@ -40,14 +40,11 @@ RUN (mkdir -p "$(dirname $ILIAS_STYLE_PATH_TO_LESSC)" && cd "$(dirname $ILIAS_ST
 COPY --from=composer1 /usr/bin/composer /usr/bin/composer1
 COPY --from=composer2 /usr/bin/composer /usr/bin/composer2
 
-COPY . /flux-ilias-ilias-base
-
-ENTRYPOINT ["/flux-ilias-ilias-base/bin/entrypoint.sh"]
-
-ENV ILIAS_WEB_DIR /var/www/html
-
 ENV ILIAS_PHP_MEMORY_LIMIT 300M
 RUN echo "memory_limit = $ILIAS_PHP_MEMORY_LIMIT" > "$PHP_INI_DIR/conf.d/ilias.ini"
+
+ENV ILIAS_WEB_DIR /var/www/html
+RUN mkdir -p "$ILIAS_WEB_DIR" && chown www-data:www-data -R "$ILIAS_WEB_DIR"
 
 ENV ILIAS_FILESYSTEM_DATA_DIR /var/iliasdata
 RUN mkdir -p "$ILIAS_FILESYSTEM_DATA_DIR" && chown www-data:www-data -R "$ILIAS_FILESYSTEM_DATA_DIR"
@@ -69,3 +66,7 @@ RUN ln -sfT "$ILIAS_FILESYSTEM_INI_PHP_FILE" "$_ILIAS_WEB_PHP_FILE" && chown -h 
 
 ENV ILIAS_PHP_PORT 9000
 EXPOSE $ILIAS_PHP_PORT
+
+ENTRYPOINT ["/flux-ilias-ilias-base/bin/entrypoint.sh"]
+
+COPY . /flux-ilias-ilias-base
