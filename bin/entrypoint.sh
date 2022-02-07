@@ -2,12 +2,30 @@
 
 set -e
 
-versionIsGreaterOrEqual() {
-  if [ -n "$1" ] && [ -n "$2" ] && [ `echo -e "$2\n$1" | sort -rV | head -n 1)` = "$1" ]; then
+checkWwwData() {
+  if [ `stat -c %u "$1"` = `id -u www-data` ] && [ `stat -c %g "$1"` = `id -g www-data` ]; then
     echo "true"
   else
     echo "false"
   fi
+}
+
+ensureWwwData() {
+  mkdir -p "$1"
+  until [ `checkWwwData "$1"` = "true" ]; do
+    echo "$1 is not owned by www-data"
+    echo "Please manually run the follow command like"
+    echo "docker exec --user root:root `hostname` chown www-data:www-data -R $1"
+    echo "Waiting 30 seconds for check again"
+    sleep 30
+  done
+  echo "$1 is owned by www-data"
+}
+
+ensureSymlink() {
+    echo "Ensure $2 is symlink to $1"
+    ln -sfT "$1" "$2"
+    chown -h www-data:www-data "$2"
 }
 
 getFileEnv() {
@@ -28,16 +46,12 @@ hashPassword() {
   echo -n "$1" | md5sum | awk '{print $1}'
 }
 
-ensureDataDirectories() {
-  echo "Ensure data directories exists and the owner is www-data:www-data"
-
-  ln -sfT "$ILIAS_FILESYSTEM_WEB_DATA_DIR" "$_ILIAS_WEB_DATA_DIR"
-  ln -sfT "$ILIAS_FILESYSTEM_INI_PHP_FILE" "$_ILIAS_WEB_PHP_FILE"
-
-  chown www-data:www-data -R "$ILIAS_FILESYSTEM_DATA_DIR"
-  chown www-data:www-data -R "$ILIAS_LOG_DIR"
-  chown -h www-data:www-data "$_ILIAS_WEB_DATA_DIR"
-  chown -h www-data:www-data "$_ILIAS_WEB_PHP_FILE"
+versionIsGreaterOrEqual() {
+  if [ -n "$1" ] && [ -n "$2" ] && [ `echo -e "$2\n$1" | sort -rV | head -n 1)` = "$1" ]; then
+    echo "true"
+  else
+    echo "false"
+  fi
 }
 
 ILIAS_PHP_DISPLAY_ERRORS="${ILIAS_PHP_DISPLAY_ERRORS:=Off}"
@@ -87,6 +101,10 @@ if [ ! -f "$ILIAS_WEB_DIR/ilias.php" ]; then
   echo "Please provide ILIAS source code to $ILIAS_WEB_DIR"
   exit 1
 fi
+
+ensureWwwData "$ILIAS_FILESYSTEM_DATA_DIR"
+ensureWwwData "$ILIAS_FILESYSTEM_WEB_DATA_DIR"
+ensureWwwData "$ILIAS_LOG_DIR"
 
 ilias_version_number=`/flux-ilias-ilias-base/bin/get_ilias_version_number.php`
 echo "Your ILIAS version number is $ilias_version_number"
@@ -204,9 +222,12 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
     host_owner="$(stat -c %u "$ILIAS_WEB_DIR")":"$(stat -c %g "$ILIAS_WEB_DIR")"
     echo "Ensure the owner of composer files is $host_owner (Like other ILIAS source code)"
     chown "$host_owner" -R "$ILIAS_WEB_DIR/libs/composer/vendor"
-    chown "$host_owner" "$ILIAS_WEB_DIR/composer.lock"
     chown "$host_owner" "$ILIAS_WEB_DIR/composer.json"
+    chown "$host_owner" "$ILIAS_WEB_DIR/composer.lock"
   fi
+
+  ensureSymlink "$ILIAS_FILESYSTEM_WEB_DATA_DIR" "$_ILIAS_WEB_DATA_DIR"
+  ensureSymlink "$ILIAS_FILESYSTEM_INI_PHP_FILE" "$_ILIAS_WEB_PHP_FILE"
 
   if [ "$is_mysql_like_database" = "true" ]; then
     mysql_query="mysql --host=$ILIAS_DATABASE_HOST --port=$ILIAS_DATABASE_PORT --user=$ILIAS_DATABASE_USER --password=$(getFileEnv ILIAS_DATABASE_PASSWORD) $ILIAS_DATABASE_DATABASE -e"
@@ -220,10 +241,19 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
     echo "Further config may will fail"
   fi
 
-  ensureDataDirectories
-
   echo "(Re)generate ILIAS setup cli $ILIAS_CONFIG_FILE"
   su-exec www-data:www-data /flux-ilias-ilias-base/bin/generate_ilias_config.php
+
+  can_write_to_www=`checkWwwData "$ILIAS_WEB_DIR"`
+  if [ "$can_write_to_www" = "false" ]; then
+    echo "$ILIAS_WEB_DIR is not owned by www-data"
+    echo "Temporary patch ILIAS setup for allow run with www-data without needed $ILIAS_WEB_DIR write permissions"
+    if [ "$is_ilias_7_or_higher" = "true" ]; then
+      sed -i "s/new Setup\\\\Condition\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/\/\/new Setup\\\\Condition\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/" "$ILIAS_WEB_DIR/setup/classes/class.ilIniFilesPopulatedObjective.php"
+    else
+      sed -i "s/new Setup\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/\/\/new Setup\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/" "$ILIAS_WEB_DIR/setup/classes/class.ilIniFilesPopulatedObjective.php"
+    fi
+  fi
 
   if [ "$is_ilias_7_or_higher" = "false" ]; then
     echo "Temporary disable apcu ext because ILIAS 6 setup is broken with it"
@@ -234,20 +264,29 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
     echo "Call ILIAS update setup cli"
     if [ "$is_ilias_7_or_higher" = "true" ]; then
       echo "Note: Auto plugin setup will be disabled because some are broken with it"
-      /flux-ilias-ilias-base/bin/run_ilias_cli.sh update --yes --no-plugins "$ILIAS_CONFIG_FILE"
+      su-exec www-data:www-data /flux-ilias-ilias-base/bin/run_ilias_cli.sh update --yes --no-plugins "$ILIAS_CONFIG_FILE"
 
       echo "Call ILIAS migrate setup cli"
-      /flux-ilias-ilias-base/bin/run_ilias_cli.sh migrate --yes --no-plugins
+      su-exec www-data:www-data /flux-ilias-ilias-base/bin/run_ilias_cli.sh migrate --yes --no-plugins
     else
-      /flux-ilias-ilias-base/bin/run_ilias_cli.sh update --yes "$ILIAS_CONFIG_FILE"
+      su-exec www-data:www-data /flux-ilias-ilias-base/bin/run_ilias_cli.sh update --yes "$ILIAS_CONFIG_FILE"
     fi
   else
     echo "Call ILIAS install setup cli"
     if [ "$is_ilias_7_or_higher" = "true" ]; then
       echo "Note: Auto plugin setup will be disabled because some are broken with it"
-      /flux-ilias-ilias-base/bin/run_ilias_cli.sh install --yes --no-plugins "$ILIAS_CONFIG_FILE"
+      su-exec www-data:www-data /flux-ilias-ilias-base/bin/run_ilias_cli.sh install --yes --no-plugins "$ILIAS_CONFIG_FILE"
     else
-      /flux-ilias-ilias-base/bin/run_ilias_cli.sh install --yes "$ILIAS_CONFIG_FILE"
+      su-exec www-data:www-data /flux-ilias-ilias-base/bin/run_ilias_cli.sh install --yes "$ILIAS_CONFIG_FILE"
+    fi
+  fi
+
+  if [ "$can_write_to_www" = "false" ]; then
+    echo "Remove ILIAS setup patch"
+    if [ "$is_ilias_7_or_higher" = "true" ]; then
+      sed -i "s/\/\/new Setup\\\\Condition\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/new Setup\\\\Condition\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/" "$ILIAS_WEB_DIR/setup/classes/class.ilIniFilesPopulatedObjective.php"
+    else
+      sed -i "s/\/\/new Setup\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/new Setup\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/" "$ILIAS_WEB_DIR/setup/classes/class.ilIniFilesPopulatedObjective.php"
     fi
   fi
 
@@ -255,8 +294,6 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
     echo "Re-enable apcu ext"
     mv "$PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini.disabled" "$PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini"
   fi
-
-  ensureDataDirectories
 
   if [ "$is_mysql_like_database" = "true" ]; then
     echo "Set ILIAS $ILIAS_ROOT_USER_LOGIN user password"
