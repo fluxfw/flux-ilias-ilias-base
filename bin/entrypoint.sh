@@ -204,7 +204,7 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
 
     if [ "$is_ilias_7_or_higher" = "true" ]; then
       echo "Use composer 2 (ILIAS 7 or higher)"
-      composer=composer2
+      composer=composer
     else
       echo "Use composer 1 (ILIAS 6)"
       composer=composer1
