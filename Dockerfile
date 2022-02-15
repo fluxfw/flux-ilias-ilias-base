@@ -1,15 +1,15 @@
 ARG APCU_SOURCE_URL=https://pecl.php.net/get/apcu
+ARG COMPOSER_IMAGE=composer:latest
 ARG COMPOSER1_IMAGE=composer:1
-ARG COMPOSER2_IMAGE=composer:latest
 ARG LESSPHP_SOURCE_URL=https://github.com/leafo/lessphp/archive/refs/tags/v0.5.0.tar.gz
 ARG PHANTOMJS_ALPINE_PATCH_SOURCE_URL=https://github.com/dustinblackman/phantomized/releases/download/2.1.1a/dockerized-phantomjs.tar.gz
 ARG PHANTOMJS_SOURCE_URL=https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
 ARG PHP_FPM_IMAGE=php:fpm-alpine
 ARG PHP8_XMLRPC_SOURCE_URL=https://pecl.php.net/get/xmlrpc
 
-FROM $COMPOSER1_IMAGE AS composer1
+FROM $COMPOSER_IMAGE AS composer
 
-FROM $COMPOSER2_IMAGE AS composer2
+FROM $COMPOSER1_IMAGE AS composer1
 
 FROM $PHP_FPM_IMAGE
 ARG APCU_SOURCE_URL
@@ -38,7 +38,8 @@ ENV ILIAS_STYLE_PATH_TO_LESSC /usr/share/lessphp/plessc
 RUN (mkdir -p "$(dirname $ILIAS_STYLE_PATH_TO_LESSC)" && cd "$(dirname $ILIAS_STYLE_PATH_TO_LESSC)" && wget -O - $LESSPHP_SOURCE_URL | tar -xz --strip-components=1 && sed -i "s/{0}/[0]/" lessc.inc.php)
 
 COPY --from=composer1 /usr/bin/composer /usr/bin/composer1
-COPY --from=composer2 /usr/bin/composer /usr/bin/composer2
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+RUN ln -s composer /usr/bin/composer2
 
 ENV ILIAS_PHP_MEMORY_LIMIT 300M
 RUN echo "memory_limit = $ILIAS_PHP_MEMORY_LIMIT" > "$PHP_INI_DIR/conf.d/ilias.ini"
