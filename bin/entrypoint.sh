@@ -202,22 +202,7 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
   if [ "$ILIAS_WEB_DIR_COMPOSER_AUTO_INSTALL" = "true" ]; then
     echo "Install composer dependencies"
 
-    if [ "$is_ilias_7_or_higher" = "true" ]; then
-      echo "Use composer 2 (ILIAS 7 or higher)"
-      composer=composer
-    else
-      echo "Use composer 1 (ILIAS 6)"
-      composer=composer1
-    fi
-
-    case $PHP_VERSION in
-      8.*)
-        $composer install -d "$ILIAS_WEB_DIR" --no-dev --ignore-platform-reqs
-      ;;
-      *)
-        $composer install -d "$ILIAS_WEB_DIR" --no-dev
-      ;;
-    esac
+    composer install -d "$ILIAS_WEB_DIR" --no-dev
 
     host_owner="$(stat -c %u "$ILIAS_WEB_DIR")":"$(stat -c %g "$ILIAS_WEB_DIR")"
     echo "Ensure the owner of composer files is $host_owner (Like other ILIAS source code)"
