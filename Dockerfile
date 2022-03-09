@@ -63,6 +63,6 @@ RUN ln -sfT "$ILIAS_FILESYSTEM_INI_PHP_FILE" "$_ILIAS_WEB_PHP_FILE" && chown -h 
 ENV ILIAS_PHP_PORT 9000
 EXPOSE $ILIAS_PHP_PORT
 
-ENTRYPOINT ["/flux-ilias-ilias-base/bin/entrypoint.sh"]
+ENTRYPOINT ["/flux-ilias-ilias-base/bin/docker-entrypoint.sh"]
 
 COPY . /flux-ilias-ilias-base

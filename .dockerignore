@@ -1,5 +1,13 @@
 *
-!bin
-!bin/**
+!bin/docker-entrypoint.sh
+!bin/enable_or_disable_ilias_cron_job.php
+!bin/ensure_ilias_user_exists.php
+!bin/generate_ilias_config.php
+!bin/get_ilias_version_number.php
+!bin/run_ilias_cli.sh
+!bin/set_client_ini_setting.php
+!bin/set_ilias_chatroom_setting.php
+!bin/set_ilias_general_setting.php
+!bin/set_ilias_ini_setting.php
 !src
 !src/**

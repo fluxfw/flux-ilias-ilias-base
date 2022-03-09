@@ -1,6 +1,6 @@
 # flux-ilias-ilias-base
 
-Experimental Beta Version
+ILIAS base ilias docker image
 
 First look at [flux-ilias](https://github.com/fluxapps/flux-ilias)
 
@@ -26,7 +26,7 @@ The follow environment variables are available
 | ILIAS_PHP_MEMORY_LIMIT | Memory limit<br>Should be at least `300M` so composer installation works | 300M |
 | ILIAS_PHP_PORT | Listen port | 9000 |
 | ILIAS_PHP_POST_MAX_SIZE | Maximal post size | 200M |
-| ILIAS_PHP_UPLOAD_MAX_SIZE | Maximal upload size | 200M  |
+| ILIAS_PHP_UPLOAD_MAX_SIZE | Maximal upload size | 200M |
 | ILIAS_COMMON_CLIENT_ID | Client name | default |
 | **ILIAS_COMMON_MASTER_PASSWORD** | GUI setup password<br>Only needed for ILIAS 6<br>Use *ILIAS_COMMON_MASTER_PASSWORD_FILE* for docker secrets | *-* |
 | ILIAS_COMMON_SERVER_TIMEZONE | Timezone | UTC |
@@ -61,8 +61,8 @@ The follow environment variables are available
 | ILIAS_PREVIEW_PATH_TO_GHOSTSCRIPT | Path to gs file | /usr/bin/gs |
 | ILIAS_STYLE_MANAGE_SYSTEM_STYLES | Enable manage system styles | false |
 | ILIAS_STYLE_PATH_TO_LESSC | Path to lessc file | /usr/share/lessphp/plessc |
-| ILIAS_SYSTEMFOLDER_CLIENT_NAME | Name | *-*  |
-| ILIAS_SYSTEMFOLDER_CLIENT_DESCRIPTION | Description | *-*  |
+| ILIAS_SYSTEMFOLDER_CLIENT_NAME | Name | *-* |
+| ILIAS_SYSTEMFOLDER_CLIENT_DESCRIPTION | Description | *-* |
 | ILIAS_SYSTEMFOLDER_CLIENT_INSTITUTION | Institution | *-* |
 | **ILIAS_SYSTEMFOLDER_CONTACT_FIRSTNAME** | First name | *-* |
 | **ILIAS_SYSTEMFOLDER_CONTACT_LASTNAME** | Last name | *-* |
