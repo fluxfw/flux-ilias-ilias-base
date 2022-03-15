@@ -1,14 +1,12 @@
 {
-  "description": "ILIAS base ilias docker image (Experimental Beta Version)",
-  "topics": [
-    "alpine",
-    "base",
-    "beta",
-    "docker",
-    "experimental",
-    "fpm",
-    "ilias",
-    "php"
-  ],
-  "homepage": "https://github.com/fluxapps/flux-ilias-ilias-base"
+    "description": "ILIAS base ilias docker image",
+    "topics": [
+        "alpine",
+        "base",
+        "docker",
+        "fpm",
+        "ilias",
+        "php"
+    ],
+    "homepage": "https://github.com/fluxapps/flux-ilias-ilias-base"
 }
