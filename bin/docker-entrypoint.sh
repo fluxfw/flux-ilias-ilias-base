@@ -3,7 +3,7 @@
 set -e
 
 checkWwwData() {
-    if [ `stat -c %u "$1"` = `id -u www-data` ] && [ `stat -c %g "$1"` = `id -g www-data` ]; then
+    if su-exec www-data:www-data test -w "$1"; then
         echo "true"
     else
         echo "false"
@@ -13,13 +13,13 @@ checkWwwData() {
 ensureWwwData() {
     mkdir -p "$1"
     until [ `checkWwwData "$1"` = "true" ]; do
-        echo "$1 is not owned by www-data"
+        echo "www-data can not write to $1"
         echo "Please manually run the follow command like"
         echo "docker exec -u root:root `hostname` chown www-data:www-data -R $1"
         echo "Waiting 30 seconds for check again"
         sleep 30
     done
-    echo "$1 is owned by www-data"
+    echo "www-data can write to $1"
 }
 
 ensureSymlink() {
@@ -231,7 +231,7 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
 
     can_write_to_www=`checkWwwData "$ILIAS_WEB_DIR"`
     if [ "$can_write_to_www" = "false" ]; then
-        echo "$ILIAS_WEB_DIR is not owned by www-data"
+        echo "www-data can not write to $ILIAS_WEB_DIR"
         echo "Temporary patch ILIAS setup for allow run with www-data without needed $ILIAS_WEB_DIR write permissions"
         if [ "$is_ilias_7_or_higher" = "true" ]; then
             sed -i "s/new Setup\\\\Condition\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/\/\/new Setup\\\\Condition\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/" "$ILIAS_WEB_DIR/setup/classes/class.ilIniFilesPopulatedObjective.php"
