@@ -15,7 +15,7 @@ ARG PHANTOMJS_ALPINE_PATCH_SOURCE_URL
 ARG PHANTOMJS_SOURCE_URL
 ARG PHP8_XMLRPC_SOURCE_URL
 
-LABEL org.opencontainers.image.source="https://github.com/fluxapps/flux-ilias-ilias-base"
+LABEL org.opencontainers.image.source="https://github.com/flux-caps/flux-ilias-ilias-base"
 LABEL maintainer="fluxlabs <support@fluxlabs.ch> (https://fluxlabs.ch)"
 
 RUN apk add --no-cache curl ffmpeg freetype-dev ghostscript imagemagick libjpeg-turbo-dev libpng-dev libxslt-dev libzip-dev mariadb-client openldap-dev patch su-exec unzip zlib-dev zip && \
