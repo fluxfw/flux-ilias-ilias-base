@@ -7,7 +7,7 @@ default:
     image: docker:latest
     before_script:
         - DOCKER_TAG=${CI_COMMIT_REF_NAME/main/latest}
-        - DOCKER_TAG_DASH=$CI_COMMIT_REF_NAME-
+        - DOCKER_TAG_DASH=$DOCKER_TAG-
         - DOCKER_TAG_DASH=${DOCKER_TAG_DASH/latest-/}
         - PHP_VERSIONS="7.2 7.3 7.4 8.0"
         - echo -n $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
@@ -49,7 +49,7 @@ publish:
           done
         - docker pull $CI_REGISTRY_IMAGE:$DOCKER_TAG
         - docker tag $CI_REGISTRY_IMAGE:$DOCKER_TAG $DOCKER_REGISTRY_URL/flux-ilias/ilias-base:$DOCKER_TAG
-        - docker push $CI_REGISTRY_IMAGE:$DOCKER_TAG
+        - docker push $DOCKER_REGISTRY_URL/flux-ilias/ilias-base:$DOCKER_TAG
     only:
         - main
         - tags
