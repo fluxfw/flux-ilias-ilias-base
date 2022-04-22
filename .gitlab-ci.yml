@@ -1,47 +1,55 @@
-variables:
-    PHP_VERSIONS: "7.2 7.3 7.4 8.0"
+stages:
+    - build
+    - repository
+    - publish
+
+default:
+    image: docker:latest
+    before_script:
+        - DOCKER_TAG=${CI_COMMIT_REF_NAME/main/latest}
+        - DOCKER_TAG_DASH=$CI_COMMIT_REF_NAME-
+        - DOCKER_TAG_DASH=${DOCKER_TAG_DASH/latest-/}
+        - PHP_VERSIONS="7.2 7.3 7.4 8.0"
+        - echo -n $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+        - if [ -n "$DOCKER_REGISTRY_URL" ]; then echo -n $DOCKER_REGISTRY_PASSWORD | docker login -u $DOCKER_REGISTRY_USER --password-stdin $DOCKER_REGISTRY_URL; fi
+    after_script:
+        - docker logout $CI_REGISTRY
+        - if [ -n "$DOCKER_REGISTRY_URL" ]; then docker logout $DOCKER_REGISTRY_URL; fi
 
 build:
     stage: build
-    image: docker:stable
     script:
-        - echo -n $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY;
-          for php_version in $PHP_VERSIONS; do
-              docker build . --pull --build-arg PHP_FPM_IMAGE=php:$php_version-fpm-alpine -t $CI_REGISTRY_IMAGE:php$php_version;
-              docker push $CI_REGISTRY_IMAGE:php$php_version;
-          done;
-          docker logout $CI_REGISTRY;
+        - for php_version in $PHP_VERSIONS; do
+              docker build . --pull --build-arg COMMIT_SHA=$CI_COMMIT_SHA --build-arg PHP_VERSION=$php_version -t $CI_REGISTRY_IMAGE:${DOCKER_TAG_DASH}php$php_version;
+              docker push $CI_REGISTRY_IMAGE:${DOCKER_TAG_DASH}php$php_version;
+          done
+        - docker tag $CI_REGISTRY_IMAGE:${DOCKER_TAG_DASH}php7.4 $CI_REGISTRY_IMAGE:$DOCKER_TAG
+        - docker push $CI_REGISTRY_IMAGE:$DOCKER_TAG
     only:
-        - develop
+        - branches
+        - tags
 
 flux-publish-utils:
-    stage: build
+    stage: repository
     image: $CI_REGISTRY/$CI_PROJECT_NAMESPACE/flux-publish-utils:latest
+    before_script: [ ]
     script:
         - "false"
+    after_script: [ ]
     only:
         - main
 
 publish:
-    stage: deploy
-    image: docker:stable
+    stage: publish
     script:
-        - echo -n $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY;
-          for php_version in $PHP_VERSIONS; do
-              docker pull $CI_REGISTRY_IMAGE:php$php_version;
-          done;
-          docker logout $CI_REGISTRY;
-        - echo -n $DEV_DOCKER_REGISTRY_PASSWORD | docker login -u $DEV_DOCKER_REGISTRY_USER --password-stdin $DEV_DOCKER_REGISTRY_URL;
-          for php_version in $PHP_VERSIONS; do
-              docker tag $CI_REGISTRY_IMAGE:php$php_version $DEV_DOCKER_REGISTRY_URL/flux-ilias/ilias-base:php$php_version;
-              docker push $DEV_DOCKER_REGISTRY_URL/flux-ilias/ilias-base:php$php_version;
-          done;
-          docker logout $DEV_DOCKER_REGISTRY_URL;
-        - echo -n $DOCKER_REGISTRY_PASSWORD | docker login -u $DOCKER_REGISTRY_USER --password-stdin $DOCKER_REGISTRY_URL;
-          for php_version in $PHP_VERSIONS; do
-              docker tag $DEV_DOCKER_REGISTRY_URL/flux-ilias/ilias-base:php$php_version $DOCKER_REGISTRY_URL/flux-ilias/ilias-base:php$php_version;
-              docker push $DOCKER_REGISTRY_URL/flux-ilias/ilias-base:php$php_version;
-          done;
-          docker logout $DOCKER_REGISTRY_URL;
+        - for php_version in $PHP_VERSIONS; do
+              docker pull $CI_REGISTRY_IMAGE:${DOCKER_TAG_DASH}php$php_version;
+              docker tag $CI_REGISTRY_IMAGE:${DOCKER_TAG_DASH}php$php_version $DOCKER_REGISTRY_URL/flux-ilias/ilias-base:${DOCKER_TAG_DASH}php$php_version;
+              docker push $DOCKER_REGISTRY_URL/flux-ilias/ilias-base:${DOCKER_TAG_DASH}php$php_version;
+          done
+        - docker pull $CI_REGISTRY_IMAGE:$DOCKER_TAG
+        - docker tag $CI_REGISTRY_IMAGE:$DOCKER_TAG $DOCKER_REGISTRY_URL/flux-ilias/ilias-base:$DOCKER_TAG
+        - docker push $CI_REGISTRY_IMAGE:$DOCKER_TAG
     only:
         - main
+        - tags
