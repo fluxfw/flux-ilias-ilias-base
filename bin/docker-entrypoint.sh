@@ -32,12 +32,12 @@ getFileEnv() {
     name="$1"
     value=`printenv "$name"`
     if [ -n "$value" ]; then
-        echo "$value"
+        echo -n "$value"
     else
         name_file="${name}_FILE"
         value_file=`printenv "$name_file"`
         if [ -n "$value_file" ] && [ -f "$value_file" ]; then
-            cat "$value_file"
+            echo -n "`cat "$value_file"`"
         fi
     fi
 }

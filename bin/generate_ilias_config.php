@@ -46,7 +46,7 @@ function config(array $template_config, array $config, string $parent_key) : ?ar
                 ) {
                     $env_value_file = filter_input(INPUT_ENV, $key . "_FILE");
                     if ($env_value_file !== null && file_exists($env_value_file)) {
-                        $config[$current_key] = file_get_contents($env_value_file) ?: "";
+                        $config[$current_key] = rtrim(file_get_contents($env_value_file) ?: "", "\n\r");
                     }
                 }
             }
