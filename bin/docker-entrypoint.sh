@@ -250,9 +250,6 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
         if [ "$is_ilias_7_or_higher" = "true" ]; then
             echo "Note: Auto plugin setup will be disabled because some are broken with it"
             su-exec www-data:www-data /flux-ilias-ilias-base/bin/run_ilias_cli.sh update --yes --no-plugins "$ILIAS_CONFIG_FILE"
-
-            echo "Call ILIAS migrate setup cli"
-            su-exec www-data:www-data /flux-ilias-ilias-base/bin/run_ilias_cli.sh migrate --yes --no-plugins
         else
             su-exec www-data:www-data /flux-ilias-ilias-base/bin/run_ilias_cli.sh update --yes "$ILIAS_CONFIG_FILE"
         fi
