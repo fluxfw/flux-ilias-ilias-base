@@ -1,11 +1,4 @@
 ARG PHP_VERSION
-
-FROM alpine:latest AS build
-
-COPY . /build/flux-ilias-ilias-base
-
-RUN (cd /build && tar -czf flux-ilias-ilias-base.tar.gz flux-ilias-ilias-base)
-
 FROM php:$PHP_VERSION-fpm-alpine
 
 LABEL org.opencontainers.image.source="https://github.com/flux-caps/flux-ilias-ilias-base"
@@ -58,7 +51,7 @@ EXPOSE $ILIAS_PHP_PORT
 
 ENTRYPOINT ["/flux-ilias-ilias-base/bin/docker-entrypoint.sh"]
 
-COPY --from=build /build /
+COPY . /flux-ilias-ilias-base
 
 ARG COMMIT_SHA
 LABEL org.opencontainers.image.revision="$COMMIT_SHA"
