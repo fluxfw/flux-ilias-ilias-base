@@ -1,5 +1,10 @@
 *
 !bin/docker-entrypoint.sh
+!bin/download-archive.sh
+!bin/download-flux-ilias-rest-api.sh
+!bin/download-flux-ilias-rest-helper-plugin.sh
+!bin/download-flux-ilias-rest-legacy-cron-helper-plugin.sh
+!bin/download-flux-ilias-rest-object-helper-plugin.sh
 !bin/download-ilias-core.sh
 !bin/enable_or_disable_ilias_cron_job.php
 !bin/ensure_ilias_user_exists.php
