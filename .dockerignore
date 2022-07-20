@@ -1,5 +1,6 @@
 *
 !bin/docker-entrypoint.sh
+!bin/download-ilias-core.sh
 !bin/enable_or_disable_ilias_cron_job.php
 !bin/ensure_ilias_user_exists.php
 !bin/generate_ilias_config.php
