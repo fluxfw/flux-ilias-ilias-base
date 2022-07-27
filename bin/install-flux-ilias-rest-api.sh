@@ -14,4 +14,4 @@ if [ ! -d "$ILIAS_WEB_DIR/Customizing/global/plugins/Services/UIComponent/UserIn
     echo "Hint: You need to install flux-ilias-rest-helper-plugin too"
 fi
 
-echo "Hint: You need to call $ILIAS_WEB_DIR/Customizing/global/flux-ilias-rest-api/bin/install-to-flux-ilias-nginx-base.sh in flux-ilias-nginx-base"
+echo "Hint: You need to call /flux-ilias-nginx-base/bin/install-flux-ilias-rest-api.sh in flux-ilias-nginx-base too"
