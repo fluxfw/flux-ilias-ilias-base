@@ -4,7 +4,7 @@ set -e
 
 version="$1"
 if [ -z "$version" ]; then
-    echo "Please pass a ILIAS core version"
+    echo "Please pass an ILIAS core version"
     exit 1
 fi
 
