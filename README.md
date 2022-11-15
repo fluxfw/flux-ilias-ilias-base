@@ -58,6 +58,7 @@ The follow environment variables are available
 | ILIAS_LOGGING_ERRORLOG_DIR | Path to error log directory | *%ILIAS_LOG_DIR%*/errors |
 | ILIAS_MATHJAX_PATH_TO_LATEX_CGI | Path to mathjax file | *-* |
 | ILIAS_MEDIAOBJECT_PATH_TO_FFMPEG | Path to ffmpeg file | /usr/bin/ffmpeg |
+| ILIAS_PDFGENERATION_PATH_TO_PHANTOM_JS | Path to phantomjs file | *-* |
 | ILIAS_PREVIEW_PATH_TO_GHOSTSCRIPT | Path to gs file | /usr/bin/gs |
 | ILIAS_STYLE_MANAGE_SYSTEM_STYLES | Enable manage system styles | false |
 | ILIAS_STYLE_PATH_TO_LESSC | Path to lessc file | /usr/share/lessphp/plessc |
