@@ -16,6 +16,10 @@ function config(array $template_config, array $config, string $parent_key) : ?ar
                     "ILIAS_CHATROOM_PORT",
                     "ILIAS_DATABASE_PORT",
                     "ILIAS_HTTP_PROXY_PORT",
+                    "ILIAS_MATHJAX_CLIENT_LIMITER",
+                    "ILIAS_MATHJAX_SERVER_TIMEOUT",
+                    "ILIAS_PRIVACYSECURITY_ACCOUNT_ASSISTANCE_DURATION",
+                    "ILIAS_PRIVACYSECURITY_AUTH_DURATION",
                     "ILIAS_VIRUSSCANNER_ICAP_PORT",
                     "ILIAS_WEBSERVICES_RPC_SERVER_PORT"
                 ])
@@ -27,6 +31,11 @@ function config(array $template_config, array $config, string $parent_key) : ?ar
                     "ILIAS_COMMON_REGISTER_NIC",
                     "ILIAS_DATABASE_CREATE_DATABASE",
                     "ILIAS_LOGGING_ENABLE",
+                    "ILIAS_MATHJAX_CLIENT_ENABLED",
+                    "ILIAS_MATHJAX_SERVER_ENABLED",
+                    "ILIAS_MATHJAX_SERVER_FOR_BROWSER",
+                    "ILIAS_MATHJAX_SERVER_FOR_EXPORT",
+                    "ILIAS_MATHJAX_SERVER_FOR_PDF",
                     "ILIAS_PRIVACYSECURITY_HTTPS_ENABLED",
                     "ILIAS_STYLE_MANAGE_SYSTEM_STYLES",
                     "ILIAS_WEBSERVICES_SOAP_USER_ADMINISTRATION"
@@ -40,7 +49,6 @@ function config(array $template_config, array $config, string $parent_key) : ?ar
                 $config[$current_key] = null;
 
                 if (in_array($key, [
-                    "ILIAS_COMMON_MASTER_PASSWORD",
                     "ILIAS_DATABASE_PASSWORD"
                 ])
                 ) {

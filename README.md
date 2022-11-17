@@ -28,7 +28,6 @@ The follow environment variables are available
 | ILIAS_PHP_POST_MAX_SIZE | Maximal post size | 200M |
 | ILIAS_PHP_UPLOAD_MAX_SIZE | Maximal upload size | 200M |
 | ILIAS_COMMON_CLIENT_ID | Client name | default |
-| **ILIAS_COMMON_MASTER_PASSWORD** | GUI setup password<br>Only needed for ILIAS 6<br>Use *ILIAS_COMMON_MASTER_PASSWORD_FILE* for docker secrets | *-* |
 | ILIAS_COMMON_SERVER_TIMEZONE | Timezone | UTC |
 | ILIAS_COMMON_REGISTER_NIC | Register on nic | false |
 | ILIAS_BACKGROUNDTASKS_TYPE | Background tasks type | sync |
@@ -41,7 +40,7 @@ The follow environment variables are available
 | **ILIAS_DATABASE_PASSWORD** | Database password<br>Use *ILIAS_DATABASE_PASSWORD_FILE* for docker secrets | *-* |
 | ILIAS_DATABASE_CREATE_DATABASE | Auto create database | true |
 | ILIAS_DATABASE_COLLATION | Init database collation | utf8_general_ci |
-| ILIAS_DATABASE_PATH_TO_DB_DUMP | Init database dump | *%ILIAS_WEB_DIR%*/setup/sql/ilias3.sql |
+| ILIAS_DATABASE_PATH_TO_DB_DUMP | Init database dump (May slow and needs mutch memory, please prefer directly import on database server) | *%ILIAS_WEB_DIR%*/setup/sql/ilias3.sql |
 | ILIAS_GLOBALCACHE_SERVICE | Global cache type | *-* |
 | ILIAS_GLOBALCACHE_COMPONENTS | Global cache components<br>`all` or separate by spaces | *-* |
 | ILIAS_GLOBALCACHE_MEMCACHED_NODES | Memcache nodes<br>JSON string | *-* |
@@ -56,7 +55,17 @@ The follow environment variables are available
 | ILIAS_LOGGING_ENABLE | Enable log | true |
 | ILIAS_LOGGING_PATH_TO_LOGFILE | Path to log file | *%ILIAS_LOG_DIR%*/ilias.log |
 | ILIAS_LOGGING_ERRORLOG_DIR | Path to error log directory | *%ILIAS_LOG_DIR%*/errors |
-| ILIAS_MATHJAX_PATH_TO_LATEX_CGI | Path to mathjax file | *-* |
+| ILIAS_MATHJAX_CLIENT_ENABLED | Enable client rendering (Only ILIAS 8 or newer) | false |
+| ILIAS_MATHJAX_CLIENT_POLYFILL_URL | Legacy browser support script url (Only ILIAS 8 or newer) | *-* |
+| ILIAS_MATHJAX_CLIENT_SCRIPT_URL | MathJax main script url (Only ILIAS 8 or newer) | *-* |
+| ILIAS_MATHJAX_CLIENT_LIMITER | Type of delimiters (Only ILIAS 8 or newer) | 0 |
+| ILIAS_MATHJAX_SERVER_ENABLED | Enable server rendering (Only ILIAS 8 or newer) | false |
+| ILIAS_MATHJAX_SERVER_ADDRESS | MathJax server url (Only ILIAS 8 or newer) | *-* |
+| ILIAS_MATHJAX_SERVER_TIMEOUT | Timeout to wait MathJax server response (Only ILIAS 8 or newer) | 0 |
+| ILIAS_MATHJAX_SERVER_FOR_BROWSER | xxx (Only ILIAS 8 or newer) | false |
+| ILIAS_MATHJAX_SERVER_FOR_EXPORT | xxx (Only ILIAS 8 or newer) | false |
+| ILIAS_MATHJAX_SERVER_FOR_PDF | xxx (Only ILIAS 8 or newer) | false |
+| ILIAS_MATHJAX_PATH_TO_LATEX_CGI | Path to mathjax file (Only ILIAS 7) | *-* |
 | ILIAS_MEDIAOBJECT_PATH_TO_FFMPEG | Path to ffmpeg file | /usr/bin/ffmpeg |
 | ILIAS_PDFGENERATION_PATH_TO_PHANTOM_JS | Path to phantomjs file | *-* |
 | ILIAS_PREVIEW_PATH_TO_GHOSTSCRIPT | Path to gs file | /usr/bin/gs |
@@ -79,7 +88,7 @@ The follow environment variables are available
 | ILIAS_UTILITIES_PATH_TO_CONVERT | Path to convert file | /usr/bin/convert |
 | ILIAS_UTILITIES_PATH_TO_ZIP | Path to zip file | /usr/bin/zip |
 | ILIAS_UTILITIES_PATH_TO_UNZIP | Path to unzip file | /usr/bin/unzip |
-| ILIAS_VIRUSSCANNER_VIRUSSCANNER | Virus scanner type | *-* |
+| ILIAS_VIRUSSCANNER_VIRUSSCANNER | Virus scanner type | none |
 | ILIAS_VIRUSSCANNER_PATH_TO_SCAN | Path to scan file | *-* |
 | ILIAS_VIRUSSCANNER_PATH_TO_CLEAN | Path to clean file | *-* |
 | ILIAS_VIRUSSCANNER_ICAP_HOST | Icap host | *-* |
@@ -87,9 +96,11 @@ The follow environment variables are available
 | ILIAS_VIRUSSCANNER_ICAP_SERVICE_NAME | Icap service name | *-* |
 | ILIAS_VIRUSSCANNER_ICAP_CLIENT_PATH | Icap client path | *-* |
 | ILIAS_PRIVACYSECURITY_HTTPS_ENABLED | Enable HTTPS privacy security on login screen | false |
+| ILIAS_PRIVACYSECURITY_AUTH_DURATION | Allowed duration of authentication (Only ILIAS 8 or newer) | *-* |
+| ILIAS_PRIVACYSECURITY_ACCOUNT_ASSISTANCE_DURATION | Allowed duration of account assistance (Only ILIAS 8 or newer) | *-* |
 | ILIAS_WEBSERVICES_SOAP_USER_ADMINISTRATION | Enable soap user administration | false |
 | ILIAS_WEBSERVICES_SOAP_WSDL_PATH | Url soap server can be accessed | *%ILIAS_HTTP_PATH%*/webservice/soap/server.php?wsdl |
-| ILIAS_WEBSERVICES_SOAP_CONNECT_TIMEOUT | Soap connection timeout | *-* |
+| ILIAS_WEBSERVICES_SOAP_CONNECT_TIMEOUT | Soap connection timeout | 10 |
 | ILIAS_WEBSERVICES_RPC_SERVER_HOST | ilserver host | ilserver |
 | ILIAS_WEBSERVICES_RPC_SERVER_PORT | ilserver port | 11111 |
 | ILIAS_LUCENE_SEARCH | Enable lucene search and index cron job | false |
