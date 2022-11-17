@@ -81,6 +81,8 @@ ILIAS_MEDIAOBJECT_PATH_TO_FFMPEG="${ILIAS_MEDIAOBJECT_PATH_TO_FFMPEG:=/usr/bin/f
 
 ILIAS_PREVIEW_PATH_TO_GHOSTSCRIPT="${ILIAS_PREVIEW_PATH_TO_GHOSTSCRIPT:=/usr/bin/gs}" && export ILIAS_PREVIEW_PATH_TO_GHOSTSCRIPT
 
+ILIAS_STYLE_PATH_TO_LESSC="${ILIAS_STYLE_PATH_TO_LESSC:=/usr/bin/lessc}" && export ILIAS_STYLE_PATH_TO_LESSC
+
 ILIAS_UTILITIES_PATH_TO_CONVERT="${ILIAS_UTILITIES_PATH_TO_CONVERT:=/usr/bin/convert}" && export ILIAS_UTILITIES_PATH_TO_CONVERT
 ILIAS_UTILITIES_PATH_TO_ZIP="${ILIAS_UTILITIES_PATH_TO_ZIP:=/usr/bin/zip}" && export ILIAS_UTILITIES_PATH_TO_ZIP
 ILIAS_UTILITIES_PATH_TO_UNZIP="${ILIAS_UTILITIES_PATH_TO_UNZIP:=/usr/bin/unzip}" && export ILIAS_UTILITIES_PATH_TO_UNZIP
@@ -105,6 +107,10 @@ fi
 ensureWwwData "$ILIAS_FILESYSTEM_DATA_DIR"
 ensureWwwData "$ILIAS_FILESYSTEM_WEB_DATA_DIR"
 ensureWwwData "$ILIAS_LOG_DIR"
+
+if [ "$ILIAS_STYLE_MANAGE_SYSTEM_STYLES" = "true" ]; then
+    ensureWwwData "$ILIAS_WEB_DIR/Customizing/global/skin"
+fi
 
 ilias_version_number=`/flux-ilias-ilias-base/bin/get_ilias_version_number.php`
 echo "Your ILIAS version number is $ilias_version_number"

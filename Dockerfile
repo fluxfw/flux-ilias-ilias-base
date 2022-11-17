@@ -12,9 +12,6 @@ RUN apk add --no-cache curl ffmpeg freetype-dev ghostscript imagemagick libjpeg-
     docker-php-source delete && \
     apk del .build-deps
 
-ENV ILIAS_STYLE_PATH_TO_LESSC /usr/share/lessphp/plessc
-RUN (mkdir -p "$(dirname $ILIAS_STYLE_PATH_TO_LESSC)" && cd "$(dirname $ILIAS_STYLE_PATH_TO_LESSC)" && wget -O - https://github.com/leafo/lessphp/archive/refs/tags/v0.5.0.tar.gz | tar -xz --strip-components=1 && sed -i "s/{0}/[0]/" lessc.inc.php)
-
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 ENV ILIAS_PHP_MEMORY_LIMIT 300M

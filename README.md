@@ -70,7 +70,7 @@ The follow environment variables are available
 | ILIAS_PDFGENERATION_PATH_TO_PHANTOM_JS | Path to phantomjs file | *-* |
 | ILIAS_PREVIEW_PATH_TO_GHOSTSCRIPT | Path to gs file | /usr/bin/gs |
 | ILIAS_STYLE_MANAGE_SYSTEM_STYLES | Enable manage system styles | false |
-| ILIAS_STYLE_PATH_TO_LESSC | Path to lessc file | /usr/share/lessphp/plessc |
+| ILIAS_STYLE_PATH_TO_LESSC | Path to lessc file | /usr/bin/lessc |
 | ILIAS_SYSTEMFOLDER_CLIENT_NAME | Name | *-* |
 | ILIAS_SYSTEMFOLDER_CLIENT_DESCRIPTION | Description | *-* |
 | ILIAS_SYSTEMFOLDER_CLIENT_INSTITUTION | Institution | *-* |
