@@ -10,6 +10,7 @@
 !bin/install-flux-ilias-rest-legacy-cron-helper-plugin.sh
 !bin/install-flux-ilias-rest-object-helper-plugin.sh
 !bin/install-ilias-core.sh
+!bin/install-lessc.sh
 !bin/run_ilias_cli.sh
 !bin/set_client_ini_setting.php
 !bin/set_ilias_general_setting.php
