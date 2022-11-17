@@ -12,7 +12,6 @@
 !bin/install-ilias-core.sh
 !bin/run_ilias_cli.sh
 !bin/set_client_ini_setting.php
-!bin/set_ilias_chatroom_setting.php
 !bin/set_ilias_general_setting.php
 !bin/set_ilias_ini_setting.php
 !src

@@ -1,7 +1,6 @@
 {
     "common": {
         "client_id": null,
-        "master_password": null,
         "server_timezone": null,
         "register_nic": null
     },
@@ -50,6 +49,16 @@
         "errorlog_dir": null
     },
     "mathjax": {
+        "client_enabled": null,
+        "client_polyfill_url": null,
+        "client_script_url": null,
+        "client_limiter": null,
+        "server_enabled": null,
+        "server_address": null,
+        "server_timeout": null,
+        "server_for_browser": null,
+        "server_for_export": null,
+        "server_for_pdf": null,
         "path_to_latex_cgi": null
     },
     "pdfgeneration": {
@@ -100,7 +109,9 @@
         "icap_client_path": null
     },
     "privacysecurity": {
-        "https_enabled": null
+        "https_enabled": null,
+        "auth_duration": null,
+        "account_assistance_duration": null
     },
     "webservices": {
         "soap_user_administration": null,

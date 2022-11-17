@@ -12,10 +12,6 @@ RUN apk add --no-cache curl ffmpeg freetype-dev ghostscript imagemagick libjpeg-
     docker-php-source delete && \
     apk del .build-deps
 
-#ENV ILIAS_PDFGENERATION_PATH_TO_PHANTOM_JS /usr/local/bin/phantomjs
-#RUN wget -O - https://github.com/dustinblackman/phantomized/releases/download/2.1.1a/dockerized-phantomjs.tar.gz | tar -xz -C / && \
-#    (mkdir -p /tmp/phantomjs && cd /tmp/phantomjs && wget -O - https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 | tar -xj --strip-components=1 && mv bin/phantomjs #$ILIAS_PDFGENERATION_PATH_TO_PHANTOM_JS && rm -rf /tmp/phantomjs)
-
 ENV ILIAS_STYLE_PATH_TO_LESSC /usr/share/lessphp/plessc
 RUN (mkdir -p "$(dirname $ILIAS_STYLE_PATH_TO_LESSC)" && cd "$(dirname $ILIAS_STYLE_PATH_TO_LESSC)" && wget -O - https://github.com/leafo/lessphp/archive/refs/tags/v0.5.0.tar.gz | tar -xz --strip-components=1 && sed -i "s/{0}/[0]/" lessc.inc.php)
 

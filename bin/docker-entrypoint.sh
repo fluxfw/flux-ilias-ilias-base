@@ -109,11 +109,9 @@ ensureWwwData "$ILIAS_LOG_DIR"
 ilias_version_number=`/flux-ilias-ilias-base/bin/get_ilias_version_number.php`
 echo "Your ILIAS version number is $ilias_version_number"
 
-if [ `versionIsGreaterOrEqual "$ilias_version_number" 6.0` = "false" ]; then
-    echo "ILIAS 5.4 or lower detected"
-    echo "You need at least ILIAS 6"
-    echo "Older ILIAS versions are not supported anymore"
-    echo "Because it does not support setup cli"
+if [ `versionIsGreaterOrEqual "$ilias_version_number" 7.0` = "false" ]; then
+    echo "You need at least ILIAS 7"
+    echo "Older ILIAS versions are not supported"
     exit 1
 fi
 
@@ -122,14 +120,6 @@ if [ -f "$auto_skip_config_temp_file" ]; then
     echo "Auto skip config (This is not a new container (re)creation)"
 else
     echo "Run config"
-
-    if [ `versionIsGreaterOrEqual "$ilias_version_number" 7.0` = "true" ]; then
-        is_ilias_7_or_higher="true"
-        echo "ILIAS 7 or higher detected"
-    else
-        is_ilias_7_or_higher="false"
-        echo "ILIAS 6 detected"
-    fi
 
     if [ -z "$ILIAS_DATABASE_TYPE" ] || [ "$ILIAS_DATABASE_TYPE" = "mysql" ] || [ "$ILIAS_DATABASE_TYPE" = "innodb" ]; then
         is_mysql_like_database="true"
@@ -233,48 +223,22 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
     if [ "$can_write_to_www" = "false" ]; then
         echo "www-data can not write to $ILIAS_WEB_DIR"
         echo "Temporary patch ILIAS setup for allow run with www-data without needed $ILIAS_WEB_DIR write permissions"
-        if [ "$is_ilias_7_or_higher" = "true" ]; then
-            sed -i "s/new Setup\\\\Condition\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/\/\/new Setup\\\\Condition\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/" "$ILIAS_WEB_DIR/setup/classes/class.ilIniFilesPopulatedObjective.php"
-        else
-            sed -i "s/new Setup\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/\/\/new Setup\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/" "$ILIAS_WEB_DIR/setup/classes/class.ilIniFilesPopulatedObjective.php"
-        fi
-    fi
-
-    if [ "$is_ilias_7_or_higher" = "false" ]; then
-        echo "Temporary disable apcu ext because ILIAS 6 setup is broken with it"
-        mv "$PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini" "$PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini.disabled"
+        sed -i "s/new Setup\\\\Condition\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/\/\/new Setup\\\\Condition\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/" "$ILIAS_WEB_DIR/setup/classes/class.ilIniFilesPopulatedObjective.php"
     fi
 
     if [ "$is_ilias_installed" = "true" ]; then
         echo "Call ILIAS update setup cli"
-        if [ "$is_ilias_7_or_higher" = "true" ]; then
-            echo "Note: Auto plugin setup will be disabled because some are broken with it"
-            su-exec www-data:www-data /flux-ilias-ilias-base/bin/run_ilias_cli.sh update --yes --no-plugins "$ILIAS_CONFIG_FILE"
-        else
-            su-exec www-data:www-data /flux-ilias-ilias-base/bin/run_ilias_cli.sh update --yes "$ILIAS_CONFIG_FILE"
-        fi
+        echo "Note: Auto plugin setup will be disabled because some are broken with it"
+        su-exec www-data:www-data /flux-ilias-ilias-base/bin/run_ilias_cli.sh update --yes --no-plugins "$ILIAS_CONFIG_FILE"
     else
         echo "Call ILIAS install setup cli"
-        if [ "$is_ilias_7_or_higher" = "true" ]; then
-            echo "Note: Auto plugin setup will be disabled because some are broken with it"
-            su-exec www-data:www-data /flux-ilias-ilias-base/bin/run_ilias_cli.sh install --yes --no-plugins "$ILIAS_CONFIG_FILE"
-        else
-            su-exec www-data:www-data /flux-ilias-ilias-base/bin/run_ilias_cli.sh install --yes "$ILIAS_CONFIG_FILE"
-        fi
+        echo "Note: Auto plugin setup will be disabled because some are broken with it"
+        su-exec www-data:www-data /flux-ilias-ilias-base/bin/run_ilias_cli.sh install --yes --no-plugins "$ILIAS_CONFIG_FILE"
     fi
 
     if [ "$can_write_to_www" = "false" ]; then
         echo "Remove ILIAS setup patch"
-        if [ "$is_ilias_7_or_higher" = "true" ]; then
-            sed -i "s/\/\/new Setup\\\\Condition\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/new Setup\\\\Condition\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/" "$ILIAS_WEB_DIR/setup/classes/class.ilIniFilesPopulatedObjective.php"
-        else
-            sed -i "s/\/\/new Setup\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/new Setup\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/" "$ILIAS_WEB_DIR/setup/classes/class.ilIniFilesPopulatedObjective.php"
-        fi
-    fi
-
-    if [ "$is_ilias_7_or_higher" = "false" ]; then
-        echo "Re-enable apcu ext"
-        mv "$PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini.disabled" "$PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini"
+        sed -i "s/\/\/new Setup\\\\Condition\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/new Setup\\\\Condition\\\\CanCreateFilesInDirectoryCondition(dirname(__DIR__, 2))/" "$ILIAS_WEB_DIR/setup/classes/class.ilIniFilesPopulatedObjective.php"
     fi
 
     if [ "$is_mysql_like_database" = "true" ]; then
@@ -296,34 +260,6 @@ upload_max_filesize = $ILIAS_PHP_UPLOAD_MAX_SIZE" > "$PHP_INI_DIR/conf.d/ilias.i
     if [ -n "$(getFileEnv ILIAS_CRON_USER_PASSWORD)" ]; then
         echo "Ensure ILIAS $ILIAS_CRON_USER_LOGIN user exists"
         su-exec www-data:www-data /flux-ilias-ilias-base/bin/ensure_ilias_user_exists.php "$ILIAS_CRON_USER_LOGIN" "$(getFileEnv ILIAS_CRON_USER_PASSWORD)"
-    fi
-
-    if [ "$is_ilias_7_or_higher" = "false" ]; then
-        echo "Manually set common master password for ILIAS 6"
-        su-exec www-data:www-data /flux-ilias-ilias-base/bin/set_ilias_ini_setting.php setup pass "`hashPassword "$(getFileEnv ILIAS_COMMON_MASTER_PASSWORD)"`"
-
-        echo "Manually set ilserver server for ILIAS 6"
-        su-exec www-data:www-data /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common rpc_server_host "$ILIAS_WEBSERVICES_RPC_SERVER_HOST"
-        su-exec www-data:www-data /flux-ilias-ilias-base/bin/set_ilias_general_setting.php common rpc_server_port "$ILIAS_WEBSERVICES_RPC_SERVER_PORT"
-
-        echo "Manually set chatroom server for ILIAS 6"
-        su-exec www-data:www-data /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php address "$ILIAS_CHATROOM_ADDRESS"
-        su-exec www-data:www-data /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php port "$ILIAS_CHATROOM_PORT"
-        if [ -n "$ILIAS_CHATROOM_HTTPS_CERT" ]; then
-            su-exec www-data:www-data /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php protocol https
-        else
-            su-exec www-data:www-data /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php protocol http
-        fi
-        su-exec www-data:www-data /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php cert "$ILIAS_CHATROOM_HTTPS_CERT"
-        su-exec www-data:www-data /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php key "$ILIAS_CHATROOM_HTTPS_KEY"
-        su-exec www-data:www-data /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php dhparam "$ILIAS_CHATROOM_HTTPS_DHPARAM"
-        su-exec www-data:www-data /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php log "$ILIAS_CHATROOM_LOG"
-        su-exec www-data:www-data /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php log_level "$ILIAS_CHATROOM_LOG_LEVEL"
-        su-exec www-data:www-data /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php error_log "$ILIAS_CHATROOM_ERROR_LOG"
-        su-exec www-data:www-data /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php ilias_proxy 1
-        su-exec www-data:www-data /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php ilias_url "$ILIAS_CHATROOM_ILIAS_PROXY_ILIAS_URL"
-        su-exec www-data:www-data /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php client_proxy 1
-        su-exec www-data:www-data /flux-ilias-ilias-base/bin/set_ilias_chatroom_setting.php client_url "$ILIAS_CHATROOM_CLIENT_PROXY_CLIENT_URL"
     fi
 
     if [ "$ILIAS_LUCENE_SEARCH" = "true" ]; then
