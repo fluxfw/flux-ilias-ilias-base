@@ -62,9 +62,9 @@ The follow environment variables are available
 | ILIAS_MATHJAX_SERVER_ENABLED | Enable server rendering (Only ILIAS 8 or newer) | false |
 | ILIAS_MATHJAX_SERVER_ADDRESS | MathJax server url (Only ILIAS 8 or newer) | *-* |
 | ILIAS_MATHJAX_SERVER_TIMEOUT | Timeout to wait MathJax server response (Only ILIAS 8 or newer) | 0 |
-| ILIAS_MATHJAX_SERVER_FOR_BROWSER | xxx (Only ILIAS 8 or newer) | false |
-| ILIAS_MATHJAX_SERVER_FOR_EXPORT | xxx (Only ILIAS 8 or newer) | false |
-| ILIAS_MATHJAX_SERVER_FOR_PDF | xxx (Only ILIAS 8 or newer) | false |
+| ILIAS_MATHJAX_SERVER_FOR_BROWSER | Use server on browser rendering (Only ILIAS 8 or newer) | false |
+| ILIAS_MATHJAX_SERVER_FOR_EXPORT | Use server on export rendering (Only ILIAS 8 or newer) | false |
+| ILIAS_MATHJAX_SERVER_FOR_PDF | Use server on PDF rendering (Only ILIAS 8 or newer) | false |
 | ILIAS_MATHJAX_PATH_TO_LATEX_CGI | Path to mathjax file (Only ILIAS 7) | *-* |
 | ILIAS_MEDIAOBJECT_PATH_TO_FFMPEG | Path to ffmpeg file | /usr/bin/ffmpeg |
 | ILIAS_PDFGENERATION_PATH_TO_PHANTOM_JS | Path to phantomjs file | *-* |
