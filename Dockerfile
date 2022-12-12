@@ -1,8 +1,6 @@
 ARG PHP_VERSION
 FROM php:$PHP_VERSION-fpm-alpine
 
-LABEL org.opencontainers.image.source="https://github.com/fluxfw/flux-ilias-ilias-base"
-
 RUN apk add --no-cache curl ffmpeg freetype-dev ghostscript imagemagick libjpeg-turbo-dev libpng-dev libxslt-dev libzip-dev mariadb-client openldap-dev patch su-exec unzip zlib-dev zip && \
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
     (mkdir -p /usr/src/php/ext/apcu && cd /usr/src/php/ext/apcu && wget -O - https://pecl.php.net/get/apcu | tar -xz --strip-components=1) && \
