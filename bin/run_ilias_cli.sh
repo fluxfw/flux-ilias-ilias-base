@@ -2,4 +2,4 @@
 
 set -e
 
-php "$ILIAS_WEB_DIR/setup/cli.php" "$@"
+exec php "$ILIAS_WEB_DIR/setup/cli.php" "$@"

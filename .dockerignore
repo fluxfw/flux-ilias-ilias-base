@@ -1,5 +1,5 @@
 *
-!bin/docker-entrypoint.sh
+!bin/cron.sh
 !bin/enable_or_disable_ilias_cron_job.php
 !bin/ensure_ilias_user_exists.php
 !bin/generate_ilias_config.php
@@ -12,6 +12,8 @@
 !bin/install-ilias-core.sh
 !bin/install-lessc.sh
 !bin/run_ilias_cli.sh
+!bin/run_ilias_cron.sh
+!bin/server.sh
 !bin/set_client_ini_setting.php
 !bin/set_ilias_general_setting.php
 !bin/set_ilias_ini_setting.php

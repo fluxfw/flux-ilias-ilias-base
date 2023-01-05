@@ -121,7 +121,8 @@ The follow environment variables are available
 | ILIAS_ROOT_USER_LOGIN | Root user login | root |
 | **ILIAS_ROOT_USER_PASSWORD** | Root user password<br>Use *ILIAS_ROOT_USER_PASSWORD_FILE* for docker secrets | *-* |
 | ILIAS_CRON_USER_LOGIN | Cron user login<br>This user will be auto created (If the password is set) | cron |
-| ILIAS_CRON_USER_PASSWORD | Cron user password<br>Use *ILIAS_CRON_USER_PASSWORD_FILE* for docker secrets | *-* |
+| **ILIAS_CRON_USER_PASSWORD** | Cron user password (Required only on cron)<br>Use *ILIAS_CRON_USER_PASSWORD_FILE* for docker secrets | *-* |
+| ILIAS_CRON_PERIOD | Period the cron job is run<br>Default value means every 5th minute | */5 * * * * |
 | ILIAS_DEVMODE | ILIAS development mode | false |
 | ILIAS_SMTP_HOST | SMTP host | *-* |
 | ILIAS_SMTP_PORT | SMTP port | *-* |
