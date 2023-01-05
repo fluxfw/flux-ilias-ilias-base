@@ -3,6 +3,7 @@
     "topics": [
         "alpine",
         "base",
+        "cron",
         "docker",
         "fpm",
         "ilias",
