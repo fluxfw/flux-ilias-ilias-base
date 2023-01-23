@@ -11,6 +11,7 @@
 !bin/install-flux-ilias-rest-object-helper-plugin.sh
 !bin/install-ilias-core.sh
 !bin/install-lessc.sh
+!bin/install-wkhtmltopdf.sh
 !bin/run_ilias_cli.sh
 !bin/run_ilias_cron.sh
 !bin/server.sh
