@@ -1,8 +1,7 @@
 ARG PHP_VERSION
 FROM php:$PHP_VERSION-fpm-alpine
 
-RUN apk update --no-cache && \
-    apk add --no-cache curl ffmpeg freetype-dev ghostscript imagemagick libjpeg-turbo-dev libpng-dev libxslt-dev libzip-dev mariadb-client openldap-dev patch su-exec unzip zlib-dev zip && \
+RUN apk add --no-cache curl ffmpeg freetype-dev ghostscript imagemagick libjpeg-turbo-dev libpng-dev libxslt-dev libzip-dev mariadb-client openldap-dev patch su-exec unzip zlib-dev zip && \
     apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && \
     (mkdir -p /usr/src/php/ext/apcu && cd /usr/src/php/ext/apcu && wget -O - https://pecl.php.net/get/apcu | tar -xz --strip-components=1) && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
