@@ -4,6 +4,7 @@
 !bin/ensure_ilias_user_exists.php
 !bin/generate_ilias_config.php
 !bin/get_ilias_version_number.php
+!bin/install-apcu.sh
 !bin/install-archive.sh
 !bin/install-flux-ilias-rest-api.sh
 !bin/install-flux-ilias-rest-helper-plugin.sh
