@@ -41,6 +41,3 @@ EXPOSE $ILIAS_PHP_PORT
 ENTRYPOINT ["/flux-ilias-ilias-base/bin/server.sh"]
 
 COPY . /flux-ilias-ilias-base
-
-ARG COMMIT_SHA
-LABEL org.opencontainers.image.revision="$COMMIT_SHA"
