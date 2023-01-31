@@ -24,7 +24,7 @@ build:
     stage: build
     script:
         - for php_version in $PHP_VERSIONS; do
-              docker build . --pull --build-arg COMMIT_SHA=$CI_COMMIT_SHA --build-arg PHP_VERSION=$php_version -t $CI_REGISTRY_IMAGE:${DOCKER_IMAGE_TAG_PREFIX}php$php_version;
+              docker build . --pull --build-arg PHP_VERSION=$php_version -t $CI_REGISTRY_IMAGE:${DOCKER_IMAGE_TAG_PREFIX}php$php_version;
               docker push $CI_REGISTRY_IMAGE:${DOCKER_IMAGE_TAG_PREFIX}php$php_version;
           done
         - docker tag $CI_REGISTRY_IMAGE:${DOCKER_IMAGE_TAG_PREFIX}php7.4 $CI_REGISTRY_IMAGE:$DOCKER_IMAGE_TAG
