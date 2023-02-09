@@ -4,7 +4,7 @@ set -e
 
 tag="$1"
 if [ -z "$tag" ]; then
-    echo "Please pass a flux-ilias-rest-api tag"
+    echo "Please pass a flux-ilias-rest-api tag" >&2
     exit 1
 fi
 

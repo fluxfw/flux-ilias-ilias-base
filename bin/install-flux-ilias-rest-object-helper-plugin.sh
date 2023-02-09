@@ -4,7 +4,7 @@ set -e
 
 tag="$1"
 if [ -z "$tag" ]; then
-    echo "Please pass a flux-ilias-rest-object-helper-plugin tag"
+    echo "Please pass a flux-ilias-rest-object-helper-plugin tag" >&2
     exit 1
 fi
 

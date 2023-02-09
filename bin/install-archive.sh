@@ -4,13 +4,13 @@ set -e
 
 url="$1"
 if [ -z "$url" ]; then
-    echo "Please pass an url"
+    echo "Please pass an url" >&2
     exit 1
 fi
 
 folder="$2"
 if [ -z "$folder" ]; then
-    echo "Please pass a folder"
+    echo "Please pass a folder" >&2
     exit 1
 fi
 
