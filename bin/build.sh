@@ -12,4 +12,4 @@ image="$user/$name"
 for php_version in 7.4 8.0; do
     docker build "$root" --pull --build-arg PHP_VERSION=$php_version -t "$image:php$php_version"
 done
-docker tag "$image:php7.4" "$image:latest"
+docker tag "$image:php8.0" "$image:latest"
