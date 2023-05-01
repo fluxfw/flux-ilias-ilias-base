@@ -13,6 +13,7 @@
 !bin/install-ilias-core.sh
 !bin/install-lessc.sh
 !bin/install-wkhtmltopdf.sh
+!bin/run_ilias_build.sh
 !bin/run_ilias_cli.sh
 !bin/run_ilias_cron.sh
 !bin/server.sh
