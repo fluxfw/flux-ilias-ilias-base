@@ -35,9 +35,6 @@ ENV ILIAS_FILESYSTEM_INI_PHP_FILE $ILIAS_FILESYSTEM_DATA_DIR/ilias.ini.php
 ENV _ILIAS_WEB_PHP_FILE $ILIAS_WEB_DIR/ilias.ini.php
 RUN ln -sfT "$ILIAS_FILESYSTEM_INI_PHP_FILE" "$_ILIAS_WEB_PHP_FILE" && chown -h www-data:www-data "$_ILIAS_WEB_PHP_FILE"
 
-ENV ILIAS_PHP_PORT 9000
-EXPOSE $ILIAS_PHP_PORT
-
 ENTRYPOINT ["/flux-ilias-ilias-base/bin/server.sh"]
 
 COPY . /flux-ilias-ilias-base
